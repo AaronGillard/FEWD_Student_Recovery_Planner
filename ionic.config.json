@@ -1,0 +1,7 @@
+{
+  "name": "student-recovery-planner",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
