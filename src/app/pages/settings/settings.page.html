@@ -1,13 +1,33 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>settings</ion-title>
+    <ion-title>Settings</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">settings</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" class="ion-padding">
+  <h1>Settings</h1>
+  <p>Manage app preferences and view basic application information.</p>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>App Information</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <p><strong>App Name:</strong> {{ appName }}</p>
+      <p><strong>Theme:</strong> {{ theme }}</p>
+      <p><strong>Platform:</strong> {{ platform }}</p>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Storage</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <p>Saved task and module data will be managed here later.</p>
+      <ion-button expand="block" color="danger">Clear Saved Data</ion-button>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

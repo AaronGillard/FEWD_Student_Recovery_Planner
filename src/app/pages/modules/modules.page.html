@@ -1,13 +1,30 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>modules</ion-title>
+    <ion-title>Modules</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">modules</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" class="ion-padding">
+  <h1>Modules</h1>
+  <p>Keep track of your academic modules and the work linked to each one.</p>
+
+  <ion-button expand="block">Add Module</ion-button>
+
+  <ion-card *ngFor="let module of modules">
+    <ion-card-header>
+      <ion-card-title>{{ module.name }}</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <p><strong>Code:</strong> {{ module.code }}</p>
+      <p><strong>Lecturer:</strong> {{ module.lecturer }}</p>
+      <p><strong>Active Tasks:</strong> {{ module.tasks }}</p>
+
+      <ion-chip [color]="module.colour">
+        <ion-label>
+          {{ module.tasks }} active task{{ module.tasks === 1 ? '' : 's' }}
+        </ion-label>
+      </ion-chip>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

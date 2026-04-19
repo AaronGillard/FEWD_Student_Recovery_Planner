@@ -1,13 +1,35 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>progress</ion-title>
+    <ion-title>Progress</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">progress</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" class="ion-padding">
+  <h1>Progress</h1>
+  <p>Track how much work you have completed and how much is still left to do.</p>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Overall Progress</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <p><strong>Total Tasks:</strong> {{ totalTasks }}</p>
+      <p><strong>Completed Tasks:</strong> {{ completedTasks }}</p>
+      <p><strong>Pending Tasks:</strong> {{ pendingTasks }}</p>
+      <p><strong>Completion Rate:</strong> {{ completionRate }}%</p>
+
+      <ion-progress-bar [value]="progressValue"></ion-progress-bar>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Motivation</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <p>{{ progressMessage }}</p>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

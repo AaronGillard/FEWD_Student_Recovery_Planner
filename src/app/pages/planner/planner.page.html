@@ -1,13 +1,66 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>planner</ion-title>
+    <ion-title>Planner</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">planner</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" class="ion-padding">
+  <h1>Planner</h1>
+  <p>Review your tasks and decide what needs attention first.</p>
+
+  <div class="filter-row">
+    <ion-button
+      size="small"
+      [fill]="currentFilter === 'all' ? 'solid' : 'outline'"
+      (click)="setFilter('all')"
+    >
+      All
+    </ion-button>
+
+    <ion-button
+      size="small"
+      color="danger"
+      [fill]="currentFilter === 'overdue' ? 'solid' : 'outline'"
+      (click)="setFilter('overdue')"
+    >
+      Overdue
+    </ion-button>
+
+    <ion-button
+      size="small"
+      color="warning"
+      [fill]="currentFilter === 'week' ? 'solid' : 'outline'"
+      (click)="setFilter('week')"
+    >
+      This Week
+    </ion-button>
+
+    <ion-button
+      size="small"
+      color="success"
+      [fill]="currentFilter === 'completed' ? 'solid' : 'outline'"
+      (click)="setFilter('completed')"
+    >
+      Completed
+    </ion-button>
+  </div>
+
+  <ion-card *ngFor="let task of filteredTasks">
+    <ion-card-header>
+      <ion-card-title>{{ task.title }}</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <p><strong>Module:</strong> {{ task.module }}</p>
+      <p><strong>Due Date:</strong> {{ task.dueDate }}</p>
+      <p><strong>Priority:</strong> {{ task.priority }}</p>
+      <p><strong>Status:</strong> {{ task.status }}</p>
+
+      <ion-chip [color]="task.colour">
+        <ion-label>{{ task.status }}</ion-label>
+      </ion-chip>
+    </ion-card-content>
+  </ion-card>
+
+  <p *ngIf="filteredTasks.length === 0">No tasks in this view.</p>
 </ion-content>
