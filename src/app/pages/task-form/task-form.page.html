@@ -1,13 +1,66 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>task-form</ion-title>
+    <ion-title>Task Form</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">task-form</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" class="ion-padding">
+  <h1>Create a New Task</h1>
+  <p>Use this page to add a task to your planner.</p>
+
+  <ion-item>
+  <ion-label position="stacked">Task Title</ion-label>
+  <ion-input
+    name="taskTitle"
+    [(ngModel)]="taskTitle"
+    placeholder="Enter task title">
+  </ion-input>
+</ion-item>
+
+  <ion-item>
+  <ion-label position="stacked">Due Date</ion-label>
+  <ion-input
+    name="dueDate"
+    type="date"
+    [(ngModel)]="dueDate">
+  </ion-input>
+</ion-item>
+
+<ion-item>
+  <ion-label position="stacked">Module</ion-label>
+  <ion-select
+    name="selectedModule"
+    [(ngModel)]="selectedModule"
+    placeholder="Select module">
+    <ion-select-option *ngFor="let module of modules" [value]="module.name">
+      {{ module.name }}
+    </ion-select-option>
+  </ion-select>
+</ion-item>
+
+  <ion-item>
+  <ion-label position="stacked">Priority</ion-label>
+  <ion-select
+    name="priority"
+    [(ngModel)]="priority"
+    placeholder="Select priority">
+    <ion-select-option value="low">Low</ion-select-option>
+    <ion-select-option value="medium">Medium</ion-select-option>
+    <ion-select-option value="high">High</ion-select-option>
+  </ion-select>
+</ion-item>
+
+<p *ngIf="errorMessage" class="error-message ion-margin-top">{{ errorMessage }}</p>
+<ion-button expand="block" class="ion-margin-top" (click)="saveTask()">
+  Save Task
+</ion-button>
+<p *ngIf="savedMessage" class="success-message ion-margin-top">{{ savedMessage }}</p>
+
+  <div class="ion-margin-top">
+  <p><strong>Task Title:</strong> {{ taskTitle }}</p>
+  <p><strong>Due Date:</strong> {{ dueDate }}</p>
+  <p><strong>Module:</strong> {{ selectedModule }}</p>
+  <p><strong>Priority:</strong> {{ priority }}</p>
+</div>
+
 </ion-content>

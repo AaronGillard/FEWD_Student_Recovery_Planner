@@ -34,4 +34,8 @@ export const routes: Routes = [
     path: 'task-form',
     loadComponent: () => import('./pages/task-form/task-form.page').then( m => m.TaskFormPage)
   },
+  {
+    path: 'task-form',
+    loadComponent: () => import('./pages/task-form/task-form.page').then( m => m.TaskFormPage)
+  },
 ];

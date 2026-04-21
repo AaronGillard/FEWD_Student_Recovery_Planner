@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { AppStorageService } from 'src/app/services/storage';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -36,28 +37,29 @@ import {
     IonLabel,
   ],
 })
-export class ModulesPage {
-  modules = [
-    {
-      name: 'Front-End Web Development',
-      code: 'FEWD',
-      lecturer: 'Module Lecturer',
-      tasks: 3,
-      colour: 'primary',
-    },
-    {
-      name: 'Database Development',
-      code: 'DBD',
-      lecturer: 'Module Lecturer',
-      tasks: 2,
-      colour: 'success',
-    },
-    {
-      name: 'Software Quality and Testing',
-      code: 'SQT',
-      lecturer: 'Module Lecturer',
-      tasks: 1,
-      colour: 'warning',
-    },
-  ];
+export class ModulesPage implements OnInit {
+  
+  constructor(private appStorageService: AppStorageService) {
+    this.modules = this.appStorageService.getModules();
+  }
+
+  async ngOnInit() {
+  const baseModules = this.appStorageService.getModules();
+
+  this.modules = await Promise.all(
+    baseModules.map(async (module) => ({
+      ...module,
+      tasks: await this.appStorageService.getTaskCountForModule(module.name),
+    }))
+  );
+}
+
+  modules: {
+    name: string;
+    code: string;
+    lecturer: string;
+    tasks: number;
+    colour: string;
+  }[] =[];
+
 }

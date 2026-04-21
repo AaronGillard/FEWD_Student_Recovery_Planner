@@ -1,20 +1,86 @@
+import { AppStorageService } from 'src/app/services/storage';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import {
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonItem,
+  IonLabel,
+  IonInput,
+  IonSelect,
+  IonSelectOption,
+  IonButton
+} from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-task-form',
   templateUrl: './task-form.page.html',
   styleUrls: ['./task-form.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonItem,
+    IonLabel,
+    IonInput,
+    IonSelect,
+    IonSelectOption,
+    IonButton
+  ]
 })
-export class TaskFormPage implements OnInit {
 
-  constructor() { }
+export class TaskFormPage implements OnInit{
+  taskTitle = '';
+  dueDate = '';
+  selectedModule = '';
+  priority = '';
+  savedMessage = '';
+  errorMessage = '';
+
+  modules: {
+  name: string;
+  code: string;
+  lecturer: string;
+  tasks: number;
+  colour: string;
+}[] = [];
+
+  constructor(private appStorageService: AppStorageService) {}
 
   ngOnInit() {
+    this.modules = this.appStorageService.getModules();
   }
 
+  async saveTask() {
+    this.savedMessage = '';
+    this.errorMessage = '';
+
+    if(!this.taskTitle.trim() || !this.dueDate || !this.selectedModule || !this.priority){
+      this.errorMessage = 'Please complete all fields before saving.';
+      return;
+    }
+    
+    const newTask = {
+      title: this.taskTitle,
+      dueDate: this.dueDate,
+      selectedModule: this.selectedModule,
+      priority: this.priority
+    };
+
+    await this.appStorageService.addTask(newTask);
+
+    this.savedMessage = 'Task saved successfully.';
+
+    this.taskTitle = '';
+    this.dueDate = '';
+    this.selectedModule = '';
+    this.priority = '';
+  }
 }
