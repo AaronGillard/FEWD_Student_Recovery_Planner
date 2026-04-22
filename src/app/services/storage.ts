@@ -1,6 +1,22 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
 
+export interface AppTask {
+  title: string;
+  dueDate: string;
+  selectedModule: string;
+  priority: string;
+  status: 'To Do' | 'Completed';
+}
+
+export interface AppModule {
+  name: string;
+  code: string;
+  lecturer: string;
+  tasks: number;
+  colour: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -20,22 +36,25 @@ export class AppStorageService {
     this.storage = storage;
   }
 
-  async getTasks() {
-    await this.init();
+  async getTasks(): Promise<AppTask[]> {
+  await this.init();
+  return (await this.storage?.get('tasks')) || [];
+}
 
-    const tasks = await this.storage?.get('tasks');
-    return tasks || [];
-  }
+  async addTask(task: Omit<AppTask, 'status'>): Promise<void> {
+  await this.init();
+  const existingTasks = await this.getTasks();
 
-  async addTask(task: { title: string; dueDate: string; selectedModule: string; priority: string }) {
-    await this.init();
+  const taskToSave: AppTask = {
+    ...task,
+    status: 'To Do',
+  };
 
-    const existingTasks = await this.getTasks();
-    existingTasks.push(task);
-    await this.storage?.set('tasks', existingTasks);
-  }
+  existingTasks.push(taskToSave);
+  await this.storage?.set('tasks', existingTasks);
+}
 
-  getModules() {
+getModules(): AppModule[] {
   return [
     {
       name: 'Front-End Web Development',

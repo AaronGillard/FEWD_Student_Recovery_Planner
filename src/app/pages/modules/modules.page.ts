@@ -1,4 +1,4 @@
-import { AppStorageService } from 'src/app/services/storage';
+import { AppModule, AppStorageService } from 'src/app/services/storage';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -37,6 +37,7 @@ import {
     IonLabel,
   ],
 })
+
 export class ModulesPage implements OnInit {
   
   constructor(private appStorageService: AppStorageService) {
@@ -54,12 +55,6 @@ export class ModulesPage implements OnInit {
   );
 }
 
-  modules: {
-    name: string;
-    code: string;
-    lecturer: string;
-    tasks: number;
-    colour: string;
-  }[] =[];
+  modules: AppModule[] = [];
 
 }
