@@ -20,6 +20,21 @@
     </ion-card-content>
   </ion-card>
 
+  <h2>Recovery Resources</h2>
+
+  <ion-card *ngFor="let resource of resources">
+    <ion-card-header>
+      <ion-card-title>{{ resource.title }}</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <p><strong>Category:</strong> {{ resource.category }}</p>
+      <p>{{ resource.description }}</p>
+    </ion-card-content>
+  </ion-card>
+
+  <p *ngIf="resources.length === 0">No recovery resources available.</p>
+
   <ion-card>
     <ion-card-header>
       <ion-card-title>Quick Navigation</ion-card-title>
