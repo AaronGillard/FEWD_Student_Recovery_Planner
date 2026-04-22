@@ -1,0 +1,22 @@
+[
+  {
+    "title": "Break large tasks into smaller steps",
+    "description": "Split assignments into small actions so they feel easier to begin.",
+    "category": "Study Strategy"
+  },
+  {
+    "title": "Use a short focused study block",
+    "description": "Work for 25 minutes on one topic, then take a short break before starting again.",
+    "category": "Time Management"
+  },
+  {
+    "title": "Prioritise overdue work first",
+    "description": "Deal with urgent deadlines before spending time on lower-priority tasks.",
+    "category": "Recovery Planning"
+  },
+  {
+    "title": "Review completed tasks weekly",
+    "description": "Look back at what you finished to track progress and stay motivated.",
+    "category": "Progress Tracking"
+  }
+]
