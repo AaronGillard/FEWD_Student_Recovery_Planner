@@ -13,7 +13,7 @@ export interface RecoveryResource {
 })
 export class RecoveryResourcesService {
   private resourcesUrl =
-    'https://raw.githubusercontent.com/AaronGillard/FEWD_Student_Recovery_Planner/main/src/assets/data/recovery-resources.json';
+    'https://raw.githubusercontent.com/AaronGillard/FEWD_Student_Recovery_Planner/main/src/assets/recovery-resources.json';
 
   constructor(private http: HttpClient) {}
 
