@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AppTask, AppStorageService } from 'src/app/services/storage';
 import {
   IonCard,
   IonCardContent,
@@ -30,14 +31,15 @@ import {
     IonProgressBar,
   ],
 })
-export class ProgressPage {
-  tasks = [
-    { title: 'Complete dashboard layout', status: 'To Do' },
-    { title: 'Prepare SQL revision notes', status: 'In Progress' },
-    { title: 'Finish testing checklist', status: 'Completed' },
-    { title: 'Update module cards', status: 'Completed' },
-    { title: 'Plan assignment structure', status: 'Completed' },
-  ];
+export class ProgressPage implements OnInit{
+  
+  tasks: AppTask[] = [];
+
+  constructor(private appStorageService: AppStorageService) {}
+
+  async ngOnInit() {
+    this.tasks = await this.appStorageService.getTasks();
+  }
 
   get totalTasks(): number {
     return this.tasks.length;

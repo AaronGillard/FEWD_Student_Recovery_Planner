@@ -51,14 +51,19 @@
     </ion-card-header>
 
     <ion-card-content>
-      <p><strong>Module:</strong> {{ task.module }}</p>
+      <p><strong>Module:</strong> {{ task.selectedModule }}</p>
       <p><strong>Due Date:</strong> {{ task.dueDate }}</p>
       <p><strong>Priority:</strong> {{ task.priority }}</p>
       <p><strong>Status:</strong> {{ task.status }}</p>
 
-      <ion-chip [color]="task.colour">
+      <ion-chip [color]="task.status === 'Completed' ? 'success' : 'warning'">
         <ion-label>{{ task.status }}</ion-label>
       </ion-chip>
+
+      <ion-button size="small" (click)="toggleTask(task.id)">
+        {{ task.status === 'Completed' ? 'Mark as To Do' : 'Mark as Completed' }}
+      </ion-button>
+
     </ion-card-content>
   </ion-card>
 

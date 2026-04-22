@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AppTask, AppStorageService } from 'src/app/services/storage';
 import {
   IonButton,
   IonCard,
@@ -34,48 +35,66 @@ import {
     IonLabel,
   ],
 })
-export class PlannerPage {
+export class PlannerPage implements OnInit {
   currentFilter = 'all';
+  tasks: AppTask[] = [];
 
-  tasks = [
-    {
-      title: 'Complete dashboard layout',
-      module: 'Front-End Web Development',
-      dueDate: '18 Apr 2026',
-      priority: 'High',
-      status: 'To Do',
-      category: 'overdue',
-      colour: 'danger',
-    },
-    {
-      title: 'Prepare SQL revision notes',
-      module: 'Database Development',
-      dueDate: '21 Apr 2026',
-      priority: 'Medium',
-      status: 'In Progress',
-      category: 'week',
-      colour: 'warning',
-    },
-    {
-      title: 'Finish testing checklist',
-      module: 'Software Quality and Testing',
-      dueDate: '23 Apr 2026',
-      priority: 'Low',
-      status: 'Completed',
-      category: 'completed',
-      colour: 'success',
-    },
-  ];
+  constructor(private appStorageService: AppStorageService) {}
+
+  async ngOnInit() {
+    await this.loadTasks();  
+  }
+
+private async loadTasks(): Promise<void> {
+  this.tasks = await this.appStorageService.getTasks();
+}
+
+async toggleTask(taskId: string): Promise<void> {
+  await this.appStorageService.toggleTaskStatus(taskId);
+  await this.loadTasks();
+}
+
+  private getTaskDate(task: AppTask): Date {
+    return new Date(`${task.dueDate}T00:00:00`);
+  }
 
   setFilter(filter: string) {
     this.currentFilter = filter;
   }
 
   get filteredTasks() {
-    if (this.currentFilter === 'all') {
-      return this.tasks;
-    }
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
-    return this.tasks.filter((task) => task.category === this.currentFilter);
+  const nextWeek = new Date(today);
+  nextWeek.setDate(today.getDate() + 7);
+
+  if (this.currentFilter === 'all') {
+    return this.tasks;
   }
+
+  if (this.currentFilter === 'completed') {
+    return this.tasks.filter((task) => task.status === 'Completed');
+  }
+
+  if (this.currentFilter === 'overdue') {
+    return this.tasks.filter((task) => {
+      const taskDate = this.getTaskDate(task);
+      return task.status !== 'Completed' && taskDate < today;
+    });
+  }
+
+  if (this.currentFilter === 'week') {
+    return this.tasks.filter((task) => {
+      const taskDate = this.getTaskDate(task);
+      return (
+        task.status !== 'Completed' &&
+        taskDate >= today &&
+        taskDate <= nextWeek
+      );
+    });
+  }
+
+  return this.tasks;
+}
 }

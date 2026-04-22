@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
 
 export interface AppTask {
+  id: string;
   title: string;
   dueDate: string;
   selectedModule: string;
@@ -41,17 +42,36 @@ export class AppStorageService {
   return (await this.storage?.get('tasks')) || [];
 }
 
-  async addTask(task: Omit<AppTask, 'status'>): Promise<void> {
+  async addTask(task: Omit<AppTask, 'status' | 'id'>): Promise<void> {
   await this.init();
   const existingTasks = await this.getTasks();
 
   const taskToSave: AppTask = {
     ...task,
+    id: Date.now().toString(),
     status: 'To Do',
   };
 
   existingTasks.push(taskToSave);
   await this.storage?.set('tasks', existingTasks);
+}
+
+async toggleTaskStatus(taskId: string): Promise<void> {
+  await this.init();
+  const existingTasks = await this.getTasks();
+
+  const updatedTasks = existingTasks.map((task) => {
+    if (task.id === taskId) {
+      return {
+        ...task,
+        status: task.status === 'Completed' ? 'To Do' : 'Completed',
+      };
+    }
+
+    return task;
+  });
+
+  await this.storage?.set('tasks', updatedTasks);
 }
 
 getModules(): AppModule[] {
