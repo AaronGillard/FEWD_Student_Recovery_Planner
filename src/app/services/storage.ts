@@ -104,4 +104,10 @@ async getTaskCountForModule(moduleName: string) {
   const tasks = await this.getTasks();
   return tasks.filter((task: { selectedModule: string }) => task.selectedModule === moduleName).length;
 }
+
+async clearSavedData(): Promise<void> {
+  await this.init();
+  await this.storage?.remove('tasks');
+}
+
 }

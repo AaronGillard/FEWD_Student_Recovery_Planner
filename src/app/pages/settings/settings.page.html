@@ -22,19 +22,6 @@
       <p><strong>Model:</strong> {{ model }}</p>
     </ion-card-content>
   </ion-card>
-
-    <ion-card>
-    <ion-card-header>
-      <ion-card-title>Notifications</ion-card-title>
-    </ion-card-header>
-
-    <ion-card-content>
-      <p>Send a test study reminder notification.</p>
-      <ion-button expand="block" (click)="scheduleTestNotification()">
-        Send Test Notification
-      </ion-button>
-    </ion-card-content>
-  </ion-card>
   
   <ion-card>
     <ion-card-header>
@@ -43,7 +30,9 @@
 
     <ion-card-content>
       <p>Saved task and module data will be managed here later.</p>
-      <ion-button expand="block" color="danger">Clear Saved Data</ion-button>
+      <ion-button expand="block" color="danger" (click)="clearSavedData()">
+        Clear Saved Data
+      </ion-button>
     </ion-card-content>
   </ion-card>
 </ion-content>

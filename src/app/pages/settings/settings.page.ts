@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LocalNotifications } from '@capacitor/local-notifications';
 import { Device } from '@capacitor/device';
+import { AppStorageService } from 'src/app/services/storage';
+import { AlertController, ToastController } from '@ionic/angular';
 import {
   IonButton,
   IonCard,
@@ -41,6 +42,8 @@ export class SettingsPage implements OnInit {
   osVersion = '';
   model = '';
 
+  constructor(private appStorageService: AppStorageService, private alertController: AlertController, private toastController: ToastController) {}
+  
   async ngOnInit() {
   const info = await Device.getInfo();
 
@@ -50,26 +53,35 @@ export class SettingsPage implements OnInit {
   this.model = info.model;
 }
 
-async scheduleTestNotification() {
-  const permissionStatus = await LocalNotifications.checkPermissions();
-
-  if (permissionStatus.display !== 'granted') {
-    const requestResult = await LocalNotifications.requestPermissions();
-
-    if (requestResult.display !== 'granted') {
-      return;
-    }
-  }
-
-  await LocalNotifications.schedule({
-    notifications: [
+async clearSavedData() {
+  const alert = await this.alertController.create({
+    header: 'Clear Saved Data?',
+    message: 'This will remove all saved planner tasks from this device.',
+    buttons: [
       {
-        id: 1,
-        title: 'Study Reminder',
-        body: 'Check your Planner and continue with your next task.',
-        schedule: { at: new Date(Date.now() + 10000) },
+        text: 'Cancel',
+        role: 'cancel',
+      },
+      {
+        text: 'Clear',
+        role: 'destructive',
+        handler: async () => {
+          await this.appStorageService.clearSavedData();
+
+          const toast = await this.toastController.create({
+            message: 'Saved data cleared.',
+            duration: 2000,
+            position: 'bottom',
+            color: 'success',
+          });
+
+          await toast.present();
+        },
       },
     ],
   });
+
+  await alert.present();
 }
+
 }
