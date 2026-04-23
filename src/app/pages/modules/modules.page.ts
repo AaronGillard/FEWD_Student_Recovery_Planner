@@ -2,6 +2,7 @@ import { AppModule, AppStorageService } from 'src/app/services/storage';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import {
   IonButton,
@@ -29,6 +30,7 @@ import {
   imports: [
     CommonModule,
     FormsModule,
+    RouterLink,
     IonHeader,
     IonToolbar,
     IonTitle,

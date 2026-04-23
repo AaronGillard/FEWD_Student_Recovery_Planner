@@ -4,6 +4,7 @@ import { Device } from '@capacitor/device';
 import { AppStorageService } from 'src/app/services/storage';
 import { AlertController, ToastController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import {
   IonButton,
   IonCard,
@@ -39,6 +40,7 @@ import {
     IonItem,
     IonLabel,
     FormsModule,
+    RouterLink,
   ],
 })
 export class SettingsPage implements OnInit {

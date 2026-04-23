@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { AppTask, AppStorageService } from 'src/app/services/storage';
 import {
   IonCard,
@@ -11,6 +12,7 @@ import {
   IonProgressBar,
   IonTitle,
   IonToolbar,
+  IonButton,
 } from '@ionic/angular/standalone';
 
 @Component({
@@ -20,6 +22,7 @@ import {
   standalone: true,
   imports: [
     CommonModule,
+    RouterLink,
     IonHeader,
     IonToolbar,
     IonTitle,
@@ -29,6 +32,7 @@ import {
     IonCardTitle,
     IonCardContent,
     IonProgressBar,
+    IonButton,
   ],
 })
 export class ProgressPage implements OnInit{
@@ -38,8 +42,16 @@ export class ProgressPage implements OnInit{
   constructor(private appStorageService: AppStorageService) {}
 
   async ngOnInit() {
-    this.tasks = await this.appStorageService.getTasks();
-  }
+  await this.loadTasks();
+}
+
+async ionViewWillEnter() {
+  await this.loadTasks();
+}
+
+private async loadTasks(): Promise<void> {
+  this.tasks = await this.appStorageService.getTasks();
+}
 
   get totalTasks(): number {
     return this.tasks.length;

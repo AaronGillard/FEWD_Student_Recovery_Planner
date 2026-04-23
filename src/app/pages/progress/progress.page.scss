@@ -13,3 +13,10 @@ ion-card {
 ion-progress-bar {
   margin-top: 1rem;
 }
+
+.top-nav {
+  display: flex;
+  gap: 0.25rem;
+  overflow-x: auto;
+  white-space: nowrap;
+}

@@ -17,3 +17,10 @@ ion-card {
 ion-chip {
   margin-top: 0.75rem;
 }
+
+.top-nav {
+  display: flex;
+  gap: 0.25rem;
+  overflow-x: auto;
+  white-space: nowrap;
+}
