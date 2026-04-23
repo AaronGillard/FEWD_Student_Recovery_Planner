@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Device } from '@capacitor/device';
 import { AppStorageService } from 'src/app/services/storage';
 import { AlertController, ToastController } from '@ionic/angular';
+import { FormsModule } from '@angular/forms';
 import {
   IonButton,
   IonCard,
@@ -13,6 +14,9 @@ import {
   IonHeader,
   IonTitle,
   IonToolbar,
+  IonToggle,
+  IonItem,
+  IonLabel,
 } from '@ionic/angular/standalone';
 
 @Component({
@@ -31,11 +35,15 @@ import {
     IonCardTitle,
     IonCardContent,
     IonButton,
+    IonToggle,
+    IonItem,
+    IonLabel,
+    FormsModule,
   ],
 })
 export class SettingsPage implements OnInit {
   appName = 'Student Recovery Planner';
-  theme = 'Light';
+  isDarkMode = false;
 
   platform = '';
   operatingSystem = '';
@@ -51,12 +59,16 @@ export class SettingsPage implements OnInit {
   this.operatingSystem = info.operatingSystem;
   this.osVersion = info.osVersion;
   this.model = info.model;
+
+  const savedTheme = localStorage.getItem('darkMode');
+  this.isDarkMode = savedTheme === 'true';
+  document.documentElement.classList.toggle('ion-palette-dark', this.isDarkMode);
 }
 
 async clearSavedData() {
   const alert = await this.alertController.create({
     header: 'Clear Saved Data?',
-    message: 'This will remove all saved planner tasks from this device.',
+    message: 'This will remove all saved planner tasks and modules from this device.',
     buttons: [
       {
         text: 'Cancel',
@@ -82,6 +94,11 @@ async clearSavedData() {
   });
 
   await alert.present();
+}
+
+toggleTheme() {
+  document.documentElement.classList.toggle('ion-palette-dark', this.isDarkMode);
+  localStorage.setItem('darkMode', this.isDarkMode ? 'true' : 'false');
 }
 
 }

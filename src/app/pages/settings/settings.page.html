@@ -15,7 +15,10 @@
 
     <ion-card-content>
       <p><strong>App Name:</strong> {{ appName }}</p>
-      <p><strong>Theme:</strong> {{ theme }}</p>
+      <ion-item>
+        <ion-label>Dark Mode</ion-label>
+        <ion-toggle [(ngModel)]="isDarkMode" (ionChange)="toggleTheme()"></ion-toggle>
+      </ion-item>      
       <p><strong>Platform:</strong> {{ platform }}</p>
       <p><strong>Operating System:</strong> {{ operatingSystem }}</p>
       <p><strong>OS Version:</strong> {{ osVersion }}</p>
@@ -29,7 +32,7 @@
     </ion-card-header>
 
     <ion-card-content>
-      <p>Saved task and module data will be managed here later.</p>
+      <p>Clears all saved modules and task data.</p>
       <ion-button expand="block" color="danger" (click)="clearSavedData()">
         Clear Saved Data
       </ion-button>
