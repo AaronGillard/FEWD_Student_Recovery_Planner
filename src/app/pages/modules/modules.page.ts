@@ -14,6 +14,10 @@ import {
   IonLabel,
   IonTitle,
   IonToolbar,
+  IonItem,
+  IonInput,
+  IonSelect,
+  IonSelectOption,
 } from '@ionic/angular/standalone';
 
 @Component({
@@ -35,17 +39,29 @@ import {
     IonCardContent,
     IonChip,
     IonLabel,
+    IonItem,
+    IonInput,
+    IonSelect,
+    IonSelectOption,
   ],
 })
 
 export class ModulesPage implements OnInit {
-  
-  constructor(private appStorageService: AppStorageService) {
-    this.modules = this.appStorageService.getModules();
-  }
+  showAddModuleForm = false;
+  modules: AppModule[] = [];
+  moduleName = '';
+  moduleCode = '';
+  moduleLecturer = '';
+  moduleColour = 'primary';
+
+  constructor(private appStorageService: AppStorageService) {}
 
   async ngOnInit() {
-  const baseModules = this.appStorageService.getModules();
+  await this.loadModules();
+}
+
+private async loadModules(): Promise<void> {
+  const baseModules = await this.appStorageService.getModules();
 
   this.modules = await Promise.all(
     baseModules.map(async (module) => ({
@@ -55,6 +71,31 @@ export class ModulesPage implements OnInit {
   );
 }
 
-  modules: AppModule[] = [];
+async saveModule(): Promise<void> {
+  if (
+    !this.moduleName.trim() ||
+    !this.moduleCode.trim() ||
+    !this.moduleLecturer.trim()
+  ) {
+    return;
+  }
+
+  const newModule = {
+    name: this.moduleName.trim(),
+    code: this.moduleCode.trim(),
+    lecturer: this.moduleLecturer.trim(),
+    colour: this.moduleColour,
+  };
+
+  await this.appStorageService.addModule(newModule);
+
+  this.moduleName = '';
+  this.moduleCode = '';
+  this.moduleLecturer = '';
+  this.moduleColour = 'primary';
+  this.showAddModuleForm = false;
+
+  await this.loadModules();
+}
 
 }

@@ -56,6 +56,19 @@ export class AppStorageService {
   await this.storage?.set('tasks', existingTasks);
 }
 
+async addModule(module: Omit<AppModule, 'tasks'>): Promise<void> {
+  await this.init();
+  const existingModules = await this.getModules();
+
+  const moduleToSave: AppModule = {
+    ...module,
+    tasks: 0,
+  };
+
+  existingModules.push(moduleToSave);
+  await this.storage?.set('modules', existingModules);
+}
+
 async toggleTaskStatus(taskId: string): Promise<void> {
   await this.init();
   const existingTasks = await this.getTasks();
@@ -74,30 +87,9 @@ async toggleTaskStatus(taskId: string): Promise<void> {
   await this.storage?.set('tasks', updatedTasks);
 }
 
-getModules(): AppModule[] {
-  return [
-    {
-      name: 'Front-End Web Development',
-      code: 'FEWD',
-      lecturer: 'Module Lecturer',
-      tasks: 3,
-      colour: 'primary',
-    },
-    {
-      name: 'Database Development',
-      code: 'DBD',
-      lecturer: 'Module Lecturer',
-      tasks: 2,
-      colour: 'success',
-    },
-    {
-      name: 'Software Quality and Testing',
-      code: 'SQT',
-      lecturer: 'Module Lecturer',
-      tasks: 1,
-      colour: 'warning',
-    },
-  ];
+async getModules(): Promise<AppModule[]> {
+  await this.init();
+  return (await this.storage?.get('modules')) || [];
 }
 
 async getTaskCountForModule(moduleName: string) {

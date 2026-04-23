@@ -48,8 +48,8 @@ export class TaskFormPage implements OnInit{
 
   constructor(private appStorageService: AppStorageService) {}
 
-  ngOnInit() {
-    this.modules = this.appStorageService.getModules();
+  async ngOnInit() {
+    this.modules = await this.appStorageService.getModules();
   }
 
   async saveTask() {
