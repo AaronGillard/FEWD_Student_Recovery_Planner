@@ -2,6 +2,7 @@ import { AppModule, AppStorageService } from 'src/app/services/storage';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AlertController } from '@ionic/angular';
 import {
   IonButton,
   IonCard,
@@ -54,11 +55,15 @@ export class ModulesPage implements OnInit {
   moduleLecturer = '';
   moduleColour = 'primary';
 
-  constructor(private appStorageService: AppStorageService) {}
+  constructor(private appStorageService: AppStorageService, private alertController: AlertController) {}
 
   async ngOnInit() {
   await this.loadModules();
 }
+
+  async ionViewWillEnter() {
+    await this.loadModules();
+  }
 
 private async loadModules(): Promise<void> {
   const baseModules = await this.appStorageService.getModules();
@@ -96,6 +101,40 @@ async saveModule(): Promise<void> {
   this.showAddModuleForm = false;
 
   await this.loadModules();
+}
+
+async deleteModule(module: AppModule): Promise<void> {
+  if (module.tasks > 0) {
+    const blockedAlert = await this.alertController.create({
+      header: 'Cannot Delete Module',
+      message: 'This module still has active tasks assigned to it. Remove those tasks first.',
+      buttons: ['OK'],
+    });
+
+    await blockedAlert.present();
+    return;
+  }
+
+  const confirmAlert = await this.alertController.create({
+    header: 'Delete Module?',
+    message: `This will permanently delete "${module.name}".`,
+    buttons: [
+      {
+        text: 'Cancel',
+        role: 'cancel',
+      },
+      {
+        text: 'Delete',
+        role: 'destructive',
+        handler: async () => {
+          await this.appStorageService.deleteModule(module.name);
+          await this.loadModules();
+        },
+      },
+    ],
+  });
+
+  await confirmAlert.present();
 }
 
 }

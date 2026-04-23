@@ -97,9 +97,30 @@ async getTaskCountForModule(moduleName: string) {
   return tasks.filter((task: { selectedModule: string }) => task.selectedModule === moduleName).length;
 }
 
+async deleteTask(taskId: string): Promise<void> {
+  await this.init();
+  const existingTasks = await this.getTasks();
+
+  const updatedTasks = existingTasks.filter((task) => task.id !== taskId);
+
+  await this.storage?.set('tasks', updatedTasks);
+}
+
+async deleteModule(moduleName: string): Promise<void> {
+  await this.init();
+  const existingModules = await this.getModules();
+
+  const updatedModules = existingModules.filter(
+    (module) => module.name !== moduleName
+  );
+
+  await this.storage?.set('modules', updatedModules);
+}
+
 async clearSavedData(): Promise<void> {
   await this.init();
   await this.storage?.remove('tasks');
+  await this.storage?.remove('modules');
 }
 
 }

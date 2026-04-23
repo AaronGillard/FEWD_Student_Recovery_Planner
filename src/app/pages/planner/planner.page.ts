@@ -71,6 +71,11 @@ async toggleTask(taskId: string): Promise<void> {
   await this.loadTasks();
 }
 
+async deleteTask(taskId: string): Promise<void> {
+  await this.appStorageService.deleteTask(taskId);
+  await this.loadTasks();
+}
+
   private getTaskDate(task: AppTask): Date {
     return new Date(`${task.dueDate}T00:00:00`);
   }

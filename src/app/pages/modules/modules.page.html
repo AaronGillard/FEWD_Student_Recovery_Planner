@@ -11,46 +11,51 @@
   <ion-button expand="block" (click)="showAddModuleForm = true">
     Add Module
   </ion-button>
-  
+
   <ion-card *ngIf="showAddModuleForm">
     <ion-card-header>
       <ion-card-title>Add Module</ion-card-title>
     </ion-card-header>
 
     <ion-card-content>
-    <ion-item>
-  <ion-label position="stacked">Module Name</ion-label>
-  <ion-input [(ngModel)]="moduleName"></ion-input>
-</ion-item>
+      <ion-item>
+        <ion-label position="stacked">Module Name</ion-label>
+        <ion-input [(ngModel)]="moduleName"></ion-input>
+      </ion-item>
 
-<ion-item>
-  <ion-label position="stacked">Module Code</ion-label>
-  <ion-input [(ngModel)]="moduleCode"></ion-input>
-</ion-item>
+      <ion-item>
+        <ion-label position="stacked">Module Code</ion-label>
+        <ion-input [(ngModel)]="moduleCode"></ion-input>
+      </ion-item>
 
-<ion-item>
-  <ion-label position="stacked">Lecturer</ion-label>
-  <ion-input [(ngModel)]="moduleLecturer"></ion-input>
-</ion-item>
+      <ion-item>
+        <ion-label position="stacked">Lecturer</ion-label>
+        <ion-input [(ngModel)]="moduleLecturer"></ion-input>
+      </ion-item>
 
-<ion-item>
-  <ion-label position="stacked">Colour</ion-label>
-  <ion-select [(ngModel)]="moduleColour">
-    <ion-select-option value="primary">Blue</ion-select-option>
-    <ion-select-option value="success">Green</ion-select-option>
-    <ion-select-option value="warning">Yellow</ion-select-option>
-    <ion-select-option value="danger">Red</ion-select-option>
-    <ion-select-option value="tertiary">Purple</ion-select-option>
-  </ion-select>
-</ion-item>
+      <ion-item>
+        <ion-label position="stacked">Colour</ion-label>
+        <ion-select [(ngModel)]="moduleColour">
+          <ion-select-option value="primary">Blue</ion-select-option>
+          <ion-select-option value="success">Green</ion-select-option>
+          <ion-select-option value="warning">Yellow</ion-select-option>
+          <ion-select-option value="danger">Red</ion-select-option>
+          <ion-select-option value="tertiary">Purple</ion-select-option>
+        </ion-select>
+      </ion-item>
 
-<ion-button expand="block" (click)="saveModule()">
-  Save Module
-</ion-button>
+      <ion-button expand="block" (click)="saveModule()">
+        Save Module
+      </ion-button>
 
-<ion-button expand="block" color="medium" fill="outline" (click)="showAddModuleForm = false">
-  Cancel
-</ion-button>
+      <ion-button
+        expand="block"
+        color="medium"
+        fill="outline"
+        (click)="showAddModuleForm = false"
+      >
+        Cancel
+      </ion-button>
     </ion-card-content>
   </ion-card>
 
@@ -69,6 +74,15 @@
           {{ module.tasks }} active task{{ module.tasks === 1 ? '' : 's' }}
         </ion-label>
       </ion-chip>
+
+      <ion-button
+        size="small"
+        color="danger"
+        fill="outline"
+        (click)="deleteModule(module)"
+      >
+        Delete Module
+      </ion-button>
     </ion-card-content>
   </ion-card>
 </ion-content>
