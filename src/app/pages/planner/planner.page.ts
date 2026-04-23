@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AppTask, AppStorageService } from 'src/app/services/storage';
+import { FormsModule } from '@angular/forms';
+import { LocalNotifications } from '@capacitor/local-notifications';
 import {
   IonButton,
   IonCard,
@@ -13,6 +15,8 @@ import {
   IonLabel,
   IonTitle,
   IonToolbar,
+  IonToast,
+  IonDatetime,
 } from '@ionic/angular/standalone';
 
 @Component({
@@ -22,6 +26,7 @@ import {
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     IonHeader,
     IonToolbar,
     IonTitle,
@@ -33,11 +38,17 @@ import {
     IonCardContent,
     IonChip,
     IonLabel,
+    IonToast,
+    IonDatetime,
   ],
 })
 export class PlannerPage implements OnInit {
   currentFilter = 'all';
   tasks: AppTask[] = [];
+  reminderToastOpen = false;
+  reminderToastMessage = '';
+  activeReminderTask: AppTask | null = null;
+  selectedReminderDateTime = '';
 
   constructor(private appStorageService: AppStorageService) {}
 
@@ -52,6 +63,35 @@ private async loadTasks(): Promise<void> {
 async toggleTask(taskId: string): Promise<void> {
   await this.appStorageService.toggleTaskStatus(taskId);
   await this.loadTasks();
+}
+
+async scheduleTaskReminder(task: AppTask): Promise<void> {
+  const permissionStatus = await LocalNotifications.checkPermissions();
+
+  if (permissionStatus.display !== 'granted') {
+    const requestResult = await LocalNotifications.requestPermissions();
+
+    if (requestResult.display !== 'granted') {
+      this.showReminderToast('Notification permission was not granted.');
+      return;
+    }
+  }
+
+  try {
+    await LocalNotifications.schedule({
+      notifications: [
+        {
+          id: new Date().getTime() % 1000000,          title: 'Task Reminder',
+          body: `Work on: ${task.title}`,
+          schedule: { at: new Date(Date.now() + 10000) },
+        },
+      ],
+    });
+
+    this.showReminderToast(`Reminder set for "${task.title}" in 10 seconds.`);
+  } catch {
+    this.showReminderToast('Could not schedule the reminder.');
+  }
 }
 
   private getTaskDate(task: AppTask): Date {
@@ -96,5 +136,70 @@ async toggleTask(taskId: string): Promise<void> {
   }
 
   return this.tasks;
+}
+
+showReminderToast(message: string) {
+  this.reminderToastMessage = message;
+  this.reminderToastOpen = true;
+}
+
+closeReminderToast() {
+  this.reminderToastOpen = false;
+}
+
+startReminderSetup(task: AppTask) {
+  this.activeReminderTask = task;
+  this.selectedReminderDateTime = '';
+}
+async confirmReminderSetup(): Promise<void> {
+  if (!this.activeReminderTask) {
+    this.showReminderToast('No task selected for a reminder.');
+    return;
+  }
+
+  if (!this.selectedReminderDateTime) {
+    this.showReminderToast('Please choose a date and time first.');
+    return;
+  }
+
+  const reminderDate = new Date(this.selectedReminderDateTime);
+
+  if (reminderDate <= new Date()) {
+    this.showReminderToast('Please choose a future date and time.');
+    return;
+  }
+
+  const permissionStatus = await LocalNotifications.checkPermissions();
+
+  if (permissionStatus.display !== 'granted') {
+    const requestResult = await LocalNotifications.requestPermissions();
+
+    if (requestResult.display !== 'granted') {
+      this.showReminderToast('Notification permission was not granted.');
+      return;
+    }
+  }
+
+  try {
+    await LocalNotifications.schedule({
+      notifications: [
+        {
+          id: new Date().getTime() % 1000000,
+          title: 'Task Reminder',
+          body: `Work on: ${this.activeReminderTask.title}`,
+          schedule: { at: reminderDate },
+        },
+      ],
+    });
+
+    this.showReminderToast(
+      `Reminder set for "${this.activeReminderTask.title}".`
+    );
+
+    this.activeReminderTask = null;
+    this.selectedReminderDateTime = '';
+  } catch {
+    this.showReminderToast('Could not schedule the reminder.');
+  }
 }
 }

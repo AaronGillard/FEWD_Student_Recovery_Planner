@@ -64,8 +64,39 @@
         {{ task.status === 'Completed' ? 'Mark as To Do' : 'Mark as Completed' }}
       </ion-button>
 
+      <ion-button size="small" fill="outline" (click)="startReminderSetup(task)">
+        Set Reminder
+      </ion-button>
+
     </ion-card-content>
   </ion-card>
 
   <p *ngIf="filteredTasks.length === 0">No tasks in this view.</p>
+
+  <ion-card *ngIf="activeReminderTask">
+  <ion-card-header>
+    <ion-card-title>Set Reminder</ion-card-title>
+  </ion-card-header>
+
+  <ion-card-content>
+  <p><strong>Task:</strong> {{ activeReminderTask.title }}</p>
+
+  <ion-datetime
+    presentation="date-time"
+    [(ngModel)]="selectedReminderDateTime"
+  ></ion-datetime>
+
+  <ion-button expand="block" (click)="confirmReminderSetup()">
+    Confirm Reminder
+  </ion-button>
+</ion-card-content>
+
+</ion-card>
+  <ion-toast
+  [isOpen]="reminderToastOpen"
+  [message]="reminderToastMessage"
+  duration="2000"
+  (didDismiss)="closeReminderToast()"
+></ion-toast>
+
 </ion-content>
