@@ -192,8 +192,10 @@ async confirmReminderSetup(): Promise<void> {
       ],
     });
 
+    const formattedReminderTime = reminderDate.toLocaleString();
+
     this.showReminderToast(
-      `Reminder set for "${this.activeReminderTask.title}".`
+      `Reminder set for "${this.activeReminderTask.title}" at ${formattedReminderTime}.`
     );
 
     this.activeReminderTask = null;
@@ -201,5 +203,10 @@ async confirmReminderSetup(): Promise<void> {
   } catch {
     this.showReminderToast('Could not schedule the reminder.');
   }
+}
+
+cancelReminderSetup() {
+  this.activeReminderTask = null;
+  this.selectedReminderDateTime = '';
 }
 }
