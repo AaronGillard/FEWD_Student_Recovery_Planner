@@ -55,26 +55,26 @@ export class PlannerPage implements OnInit {
   constructor(private appStorageService: AppStorageService) {}
 
   async ngOnInit() {
-    await this.loadTasks();  
+    await this.loadTasks();
   }
 
   async ionViewWillEnter() {
-  await this.loadTasks();
-}
+    await this.loadTasks();
+  }
 
-private async loadTasks(): Promise<void> {
-  this.tasks = await this.appStorageService.getTasks();
-}
+  private async loadTasks(): Promise<void> {
+    this.tasks = await this.appStorageService.getTasks();
+  }
 
-async toggleTask(taskId: string): Promise<void> {
-  await this.appStorageService.toggleTaskStatus(taskId);
-  await this.loadTasks();
-}
+  async toggleTask(taskId: string): Promise<void> {
+    await this.appStorageService.toggleTaskStatus(taskId);
+    await this.loadTasks();
+  }
 
-async deleteTask(taskId: string): Promise<void> {
-  await this.appStorageService.deleteTask(taskId);
-  await this.loadTasks();
-}
+  async deleteTask(taskId: string): Promise<void> {
+    await this.appStorageService.deleteTask(taskId);
+    await this.loadTasks();
+  }
 
   private getTaskDate(task: AppTask): Date {
     return new Date(`${task.dueDate}T00:00:00`);
@@ -85,110 +85,110 @@ async deleteTask(taskId: string): Promise<void> {
   }
 
   get filteredTasks() {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-  const nextWeek = new Date(today);
-  nextWeek.setDate(today.getDate() + 7);
+    const nextWeek = new Date(today);
+    nextWeek.setDate(today.getDate() + 7);
 
-  if (this.currentFilter === 'all') {
+    if (this.currentFilter === 'all') {
+      return this.tasks;
+    }
+
+    if (this.currentFilter === 'completed') {
+      return this.tasks.filter((task) => task.status === 'Completed');
+    }
+
+    if (this.currentFilter === 'overdue') {
+      return this.tasks.filter((task) => {
+        const taskDate = this.getTaskDate(task);
+        return task.status !== 'Completed' && taskDate < today;
+      });
+    }
+
+    if (this.currentFilter === 'week') {
+      return this.tasks.filter((task) => {
+        const taskDate = this.getTaskDate(task);
+        return (
+          task.status !== 'Completed' &&
+          taskDate >= today &&
+          taskDate <= nextWeek
+        );
+      });
+    }
+
     return this.tasks;
   }
 
-  if (this.currentFilter === 'completed') {
-    return this.tasks.filter((task) => task.status === 'Completed');
+  showReminderToast(message: string) {
+    this.reminderToastMessage = message;
+    this.reminderToastOpen = true;
   }
 
-  if (this.currentFilter === 'overdue') {
-    return this.tasks.filter((task) => {
-      const taskDate = this.getTaskDate(task);
-      return task.status !== 'Completed' && taskDate < today;
-    });
+  closeReminderToast() {
+    this.reminderToastOpen = false;
   }
 
-  if (this.currentFilter === 'week') {
-    return this.tasks.filter((task) => {
-      const taskDate = this.getTaskDate(task);
-      return (
-        task.status !== 'Completed' &&
-        taskDate >= today &&
-        taskDate <= nextWeek
-      );
-    });
+  startReminderSetup(task: AppTask) {
+    this.activeReminderTask = task;
+    this.selectedReminderDateTime = '';
   }
-
-  return this.tasks;
-}
-
-showReminderToast(message: string) {
-  this.reminderToastMessage = message;
-  this.reminderToastOpen = true;
-}
-
-closeReminderToast() {
-  this.reminderToastOpen = false;
-}
-
-startReminderSetup(task: AppTask) {
-  this.activeReminderTask = task;
-  this.selectedReminderDateTime = '';
-}
-async confirmReminderSetup(): Promise<void> {
-  if (!this.activeReminderTask) {
-    this.showReminderToast('No task selected for a reminder.');
-    return;
-  }
-
-  if (!this.selectedReminderDateTime) {
-    this.showReminderToast('Please choose a date and time first.');
-    return;
-  }
-
-  const reminderDate = new Date(this.selectedReminderDateTime);
-
-  if (reminderDate <= new Date()) {
-    this.showReminderToast('Please choose a future date and time.');
-    return;
-  }
-
-  const permissionStatus = await LocalNotifications.checkPermissions();
-
-  if (permissionStatus.display !== 'granted') {
-    const requestResult = await LocalNotifications.requestPermissions();
-
-    if (requestResult.display !== 'granted') {
-      this.showReminderToast('Notification permission was not granted.');
+  async confirmReminderSetup(): Promise<void> {
+    if (!this.activeReminderTask) {
+      this.showReminderToast('No task selected for a reminder.');
       return;
+    }
+
+    if (!this.selectedReminderDateTime) {
+      this.showReminderToast('Please choose a date and time first.');
+      return;
+    }
+
+    const reminderDate = new Date(this.selectedReminderDateTime);
+
+    if (reminderDate <= new Date()) {
+      this.showReminderToast('Please choose a future date and time.');
+      return;
+    }
+
+    const permissionStatus = await LocalNotifications.checkPermissions();
+
+    if (permissionStatus.display !== 'granted') {
+      const requestResult = await LocalNotifications.requestPermissions();
+
+      if (requestResult.display !== 'granted') {
+        this.showReminderToast('Notification permission was not granted.');
+        return;
+      }
+    }
+
+    try {
+      await LocalNotifications.schedule({
+        notifications: [
+          {
+            id: new Date().getTime() % 1000000,
+            title: 'Task Reminder',
+            body: `Work on: ${this.activeReminderTask.title}`,
+            schedule: { at: reminderDate },
+          },
+        ],
+      });
+
+      const formattedReminderTime = reminderDate.toLocaleString();
+
+      this.showReminderToast(
+        `Reminder set for "${this.activeReminderTask.title}" at ${formattedReminderTime}.`,
+      );
+
+      this.activeReminderTask = null;
+      this.selectedReminderDateTime = '';
+    } catch {
+      this.showReminderToast('Could not schedule the reminder.');
     }
   }
 
-  try {
-    await LocalNotifications.schedule({
-      notifications: [
-        {
-          id: new Date().getTime() % 1000000,
-          title: 'Task Reminder',
-          body: `Work on: ${this.activeReminderTask.title}`,
-          schedule: { at: reminderDate },
-        },
-      ],
-    });
-
-    const formattedReminderTime = reminderDate.toLocaleString();
-
-    this.showReminderToast(
-      `Reminder set for "${this.activeReminderTask.title}" at ${formattedReminderTime}.`
-    );
-
+  cancelReminderSetup() {
     this.activeReminderTask = null;
     this.selectedReminderDateTime = '';
-  } catch {
-    this.showReminderToast('Could not schedule the reminder.');
   }
-}
-
-cancelReminderSetup() {
-  this.activeReminderTask = null;
-  this.selectedReminderDateTime = '';
-}
 }

@@ -35,23 +35,22 @@ import {
     IonButton,
   ],
 })
-export class ProgressPage implements OnInit{
-  
+export class ProgressPage implements OnInit {
   tasks: AppTask[] = [];
 
   constructor(private appStorageService: AppStorageService) {}
 
   async ngOnInit() {
-  await this.loadTasks();
-}
+    await this.loadTasks();
+  }
 
-async ionViewWillEnter() {
-  await this.loadTasks();
-}
+  async ionViewWillEnter() {
+    await this.loadTasks();
+  }
 
-private async loadTasks(): Promise<void> {
-  this.tasks = await this.appStorageService.getTasks();
-}
+  private async loadTasks(): Promise<void> {
+    this.tasks = await this.appStorageService.getTasks();
+  }
 
   get totalTasks(): number {
     return this.tasks.length;

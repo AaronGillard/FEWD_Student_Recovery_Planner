@@ -16,6 +16,7 @@ import {
   RecoveryResource,
   RecoveryResourcesService,
 } from 'src/app/services/recovery-resources.service';
+import { AppTask, AppStorageService } from 'src/app/services/storage';
 
 @Component({
   selector: 'app-dashboard',
@@ -38,14 +39,59 @@ import {
 })
 export class DashboardPage implements OnInit {
   resources: RecoveryResource[] = [];
+  tasks: AppTask[] = [];
 
   constructor(
-    private recoveryResourcesService: RecoveryResourcesService
+    private recoveryResourcesService: RecoveryResourcesService,
+    private appStorageService: AppStorageService,
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.recoveryResourcesService.getResources().subscribe((data) => {
       this.resources = data;
     });
+
+    await this.loadTasks();
+  }
+
+  async ionViewWillEnter() {
+    await this.loadTasks();
+  }
+
+  private async loadTasks(): Promise<void> {
+    this.tasks = await this.appStorageService.getTasks();
+  }
+
+  private getTaskDate(task: AppTask): Date {
+    return new Date(`${task.dueDate}T00:00:00`);
+  }
+
+  get overdueTasksCount(): number {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return this.tasks.filter((task) => {
+      const taskDate = this.getTaskDate(task);
+      return task.status !== 'Completed' && taskDate < today;
+    }).length;
+  }
+
+  get dueThisWeekCount(): number {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const nextWeek = new Date(today);
+    nextWeek.setDate(today.getDate() + 7);
+
+    return this.tasks.filter((task) => {
+      const taskDate = this.getTaskDate(task);
+      return (
+        task.status !== 'Completed' && taskDate >= today && taskDate <= nextWeek
+      );
+    }).length;
+  }
+
+  get completedTasksCount(): number {
+    return this.tasks.filter((task) => task.status === 'Completed').length;
   }
 }

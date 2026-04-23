@@ -12,30 +12,37 @@ export const routes: Routes = [
   },
   {
     path: 'dashboard',
-    loadComponent: () => import('./pages/dashboard/dashboard.page').then( m => m.DashboardPage)
+    loadComponent: () =>
+      import('./pages/dashboard/dashboard.page').then((m) => m.DashboardPage),
   },
   {
     path: 'modules',
-    loadComponent: () => import('./pages/modules/modules.page').then( m => m.ModulesPage)
+    loadComponent: () =>
+      import('./pages/modules/modules.page').then((m) => m.ModulesPage),
   },
   {
     path: 'planner',
-    loadComponent: () => import('./pages/planner/planner.page').then( m => m.PlannerPage)
+    loadComponent: () =>
+      import('./pages/planner/planner.page').then((m) => m.PlannerPage),
   },
   {
     path: 'progress',
-    loadComponent: () => import('./pages/progress/progress.page').then( m => m.ProgressPage)
+    loadComponent: () =>
+      import('./pages/progress/progress.page').then((m) => m.ProgressPage),
   },
   {
     path: 'settings',
-    loadComponent: () => import('./pages/settings/settings.page').then( m => m.SettingsPage)
+    loadComponent: () =>
+      import('./pages/settings/settings.page').then((m) => m.SettingsPage),
   },
   {
     path: 'task-form',
-    loadComponent: () => import('./pages/task-form/task-form.page').then( m => m.TaskFormPage)
+    loadComponent: () =>
+      import('./pages/task-form/task-form.page').then((m) => m.TaskFormPage),
   },
   {
     path: 'task-form',
-    loadComponent: () => import('./pages/task-form/task-form.page').then( m => m.TaskFormPage)
+    loadComponent: () =>
+      import('./pages/task-form/task-form.page').then((m) => m.TaskFormPage),
   },
 ];

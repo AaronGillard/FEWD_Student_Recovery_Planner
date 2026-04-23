@@ -52,55 +52,65 @@ export class SettingsPage implements OnInit {
   osVersion = '';
   model = '';
 
-  constructor(private appStorageService: AppStorageService, private alertController: AlertController, private toastController: ToastController) {}
-  
+  constructor(
+    private appStorageService: AppStorageService,
+    private alertController: AlertController,
+    private toastController: ToastController,
+  ) {}
+
   async ngOnInit() {
-  const info = await Device.getInfo();
+    const info = await Device.getInfo();
 
-  this.platform = info.platform;
-  this.operatingSystem = info.operatingSystem;
-  this.osVersion = info.osVersion;
-  this.model = info.model;
+    this.platform = info.platform;
+    this.operatingSystem = info.operatingSystem;
+    this.osVersion = info.osVersion;
+    this.model = info.model;
 
-  const savedTheme = localStorage.getItem('darkMode');
-  this.isDarkMode = savedTheme === 'true';
-  document.documentElement.classList.toggle('ion-palette-dark', this.isDarkMode);
-}
+    const savedTheme = localStorage.getItem('darkMode');
+    this.isDarkMode = savedTheme === 'true';
+    document.documentElement.classList.toggle(
+      'ion-palette-dark',
+      this.isDarkMode,
+    );
+  }
 
-async clearSavedData() {
-  const alert = await this.alertController.create({
-    header: 'Clear Saved Data?',
-    message: 'This will remove all saved planner tasks and modules from this device.',
-    buttons: [
-      {
-        text: 'Cancel',
-        role: 'cancel',
-      },
-      {
-        text: 'Clear',
-        role: 'destructive',
-        handler: async () => {
-          await this.appStorageService.clearSavedData();
-
-          const toast = await this.toastController.create({
-            message: 'Saved data cleared.',
-            duration: 2000,
-            position: 'bottom',
-            color: 'success',
-          });
-
-          await toast.present();
+  async clearSavedData() {
+    const alert = await this.alertController.create({
+      header: 'Clear Saved Data?',
+      message:
+        'This will remove all saved planner tasks and modules from this device.',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
         },
-      },
-    ],
-  });
+        {
+          text: 'Clear',
+          role: 'destructive',
+          handler: async () => {
+            await this.appStorageService.clearSavedData();
 
-  await alert.present();
-}
+            const toast = await this.toastController.create({
+              message: 'Saved data cleared.',
+              duration: 2000,
+              position: 'bottom',
+              color: 'success',
+            });
 
-toggleTheme() {
-  document.documentElement.classList.toggle('ion-palette-dark', this.isDarkMode);
-  localStorage.setItem('darkMode', this.isDarkMode ? 'true' : 'false');
-}
+            await toast.present();
+          },
+        },
+      ],
+    });
 
+    await alert.present();
+  }
+
+  toggleTheme() {
+    document.documentElement.classList.toggle(
+      'ion-palette-dark',
+      this.isDarkMode,
+    );
+    localStorage.setItem('darkMode', this.isDarkMode ? 'true' : 'false');
+  }
 }

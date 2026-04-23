@@ -48,7 +48,6 @@ import {
     IonSelectOption,
   ],
 })
-
 export class ModulesPage implements OnInit {
   showAddModuleForm = false;
   modules: AppModule[] = [];
@@ -57,86 +56,89 @@ export class ModulesPage implements OnInit {
   moduleLecturer = '';
   moduleColour = 'primary';
 
-  constructor(private appStorageService: AppStorageService, private alertController: AlertController) {}
+  constructor(
+    private appStorageService: AppStorageService,
+    private alertController: AlertController,
+  ) {}
 
   async ngOnInit() {
-  await this.loadModules();
-}
+    await this.loadModules();
+  }
 
   async ionViewWillEnter() {
     await this.loadModules();
   }
 
-private async loadModules(): Promise<void> {
-  const baseModules = await this.appStorageService.getModules();
+  private async loadModules(): Promise<void> {
+    const baseModules = await this.appStorageService.getModules();
 
-  this.modules = await Promise.all(
-    baseModules.map(async (module) => ({
-      ...module,
-      tasks: await this.appStorageService.getTaskCountForModule(module.name),
-    }))
-  );
-}
-
-async saveModule(): Promise<void> {
-  if (
-    !this.moduleName.trim() ||
-    !this.moduleCode.trim() ||
-    !this.moduleLecturer.trim()
-  ) {
-    return;
+    this.modules = await Promise.all(
+      baseModules.map(async (module) => ({
+        ...module,
+        tasks: await this.appStorageService.getTaskCountForModule(module.name),
+      })),
+    );
   }
 
-  const newModule = {
-    name: this.moduleName.trim(),
-    code: this.moduleCode.trim(),
-    lecturer: this.moduleLecturer.trim(),
-    colour: this.moduleColour,
-  };
+  async saveModule(): Promise<void> {
+    if (
+      !this.moduleName.trim() ||
+      !this.moduleCode.trim() ||
+      !this.moduleLecturer.trim()
+    ) {
+      return;
+    }
 
-  await this.appStorageService.addModule(newModule);
+    const newModule = {
+      name: this.moduleName.trim(),
+      code: this.moduleCode.trim(),
+      lecturer: this.moduleLecturer.trim(),
+      colour: this.moduleColour,
+    };
 
-  this.moduleName = '';
-  this.moduleCode = '';
-  this.moduleLecturer = '';
-  this.moduleColour = 'primary';
-  this.showAddModuleForm = false;
+    await this.appStorageService.addModule(newModule);
 
-  await this.loadModules();
-}
+    this.moduleName = '';
+    this.moduleCode = '';
+    this.moduleLecturer = '';
+    this.moduleColour = 'primary';
+    this.showAddModuleForm = false;
 
-async deleteModule(module: AppModule): Promise<void> {
-  if (module.tasks > 0) {
-    const blockedAlert = await this.alertController.create({
-      header: 'Cannot Delete Module',
-      message: 'This module still has active tasks assigned to it. Remove those tasks first.',
-      buttons: ['OK'],
+    await this.loadModules();
+  }
+
+  async deleteModule(module: AppModule): Promise<void> {
+    if (module.tasks > 0) {
+      const blockedAlert = await this.alertController.create({
+        header: 'Cannot Delete Module',
+        message:
+          'This module still has active tasks assigned to it. Remove those tasks first.',
+        buttons: ['OK'],
+      });
+
+      await blockedAlert.present();
+      return;
+    }
+
+    const confirmAlert = await this.alertController.create({
+      header: 'Delete Module?',
+      message: `This will permanently delete "${module.name}".`,
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+        },
+        {
+          text: 'Delete',
+          role: 'destructive',
+          handler: async () => {
+            await this.appStorageService.deleteModule(module.name);
+            await this.loadModules();
+          },
+        },
+      ],
     });
 
-    await blockedAlert.present();
-    return;
+    await confirmAlert.present();
   }
-
-  const confirmAlert = await this.alertController.create({
-    header: 'Delete Module?',
-    message: `This will permanently delete "${module.name}".`,
-    buttons: [
-      {
-        text: 'Cancel',
-        role: 'cancel',
-      },
-      {
-        text: 'Delete',
-        role: 'destructive',
-        handler: async () => {
-          await this.appStorageService.deleteModule(module.name);
-          await this.loadModules();
-        },
-      },
-    ],
-  });
-
-  await confirmAlert.present();
-}
-
 }

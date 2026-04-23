@@ -38,89 +38,90 @@ export class AppStorageService {
   }
 
   async getTasks(): Promise<AppTask[]> {
-  await this.init();
-  return (await this.storage?.get('tasks')) || [];
-}
+    await this.init();
+    return (await this.storage?.get('tasks')) || [];
+  }
 
   async addTask(task: Omit<AppTask, 'status' | 'id'>): Promise<void> {
-  await this.init();
-  const existingTasks = await this.getTasks();
+    await this.init();
+    const existingTasks = await this.getTasks();
 
-  const taskToSave: AppTask = {
-    ...task,
-    id: Date.now().toString(),
-    status: 'To Do',
-  };
+    const taskToSave: AppTask = {
+      ...task,
+      id: Date.now().toString(),
+      status: 'To Do',
+    };
 
-  existingTasks.push(taskToSave);
-  await this.storage?.set('tasks', existingTasks);
-}
+    existingTasks.push(taskToSave);
+    await this.storage?.set('tasks', existingTasks);
+  }
 
-async addModule(module: Omit<AppModule, 'tasks'>): Promise<void> {
-  await this.init();
-  const existingModules = await this.getModules();
+  async addModule(module: Omit<AppModule, 'tasks'>): Promise<void> {
+    await this.init();
+    const existingModules = await this.getModules();
 
-  const moduleToSave: AppModule = {
-    ...module,
-    tasks: 0,
-  };
+    const moduleToSave: AppModule = {
+      ...module,
+      tasks: 0,
+    };
 
-  existingModules.push(moduleToSave);
-  await this.storage?.set('modules', existingModules);
-}
+    existingModules.push(moduleToSave);
+    await this.storage?.set('modules', existingModules);
+  }
 
-async toggleTaskStatus(taskId: string): Promise<void> {
-  await this.init();
-  const existingTasks = await this.getTasks();
+  async toggleTaskStatus(taskId: string): Promise<void> {
+    await this.init();
+    const existingTasks = await this.getTasks();
 
-  const updatedTasks = existingTasks.map((task) => {
-    if (task.id === taskId) {
-      return {
-        ...task,
-        status: task.status === 'Completed' ? 'To Do' : 'Completed',
-      };
-    }
+    const updatedTasks = existingTasks.map((task) => {
+      if (task.id === taskId) {
+        return {
+          ...task,
+          status: task.status === 'Completed' ? 'To Do' : 'Completed',
+        };
+      }
 
-    return task;
-  });
+      return task;
+    });
 
-  await this.storage?.set('tasks', updatedTasks);
-}
+    await this.storage?.set('tasks', updatedTasks);
+  }
 
-async getModules(): Promise<AppModule[]> {
-  await this.init();
-  return (await this.storage?.get('modules')) || [];
-}
+  async getModules(): Promise<AppModule[]> {
+    await this.init();
+    return (await this.storage?.get('modules')) || [];
+  }
 
-async getTaskCountForModule(moduleName: string) {
-  const tasks = await this.getTasks();
-  return tasks.filter((task: { selectedModule: string }) => task.selectedModule === moduleName).length;
-}
+  async getTaskCountForModule(moduleName: string) {
+    const tasks = await this.getTasks();
+    return tasks.filter(
+      (task: { selectedModule: string }) => task.selectedModule === moduleName,
+    ).length;
+  }
 
-async deleteTask(taskId: string): Promise<void> {
-  await this.init();
-  const existingTasks = await this.getTasks();
+  async deleteTask(taskId: string): Promise<void> {
+    await this.init();
+    const existingTasks = await this.getTasks();
 
-  const updatedTasks = existingTasks.filter((task) => task.id !== taskId);
+    const updatedTasks = existingTasks.filter((task) => task.id !== taskId);
 
-  await this.storage?.set('tasks', updatedTasks);
-}
+    await this.storage?.set('tasks', updatedTasks);
+  }
 
-async deleteModule(moduleName: string): Promise<void> {
-  await this.init();
-  const existingModules = await this.getModules();
+  async deleteModule(moduleName: string): Promise<void> {
+    await this.init();
+    const existingModules = await this.getModules();
 
-  const updatedModules = existingModules.filter(
-    (module) => module.name !== moduleName
-  );
+    const updatedModules = existingModules.filter(
+      (module) => module.name !== moduleName,
+    );
 
-  await this.storage?.set('modules', updatedModules);
-}
+    await this.storage?.set('modules', updatedModules);
+  }
 
-async clearSavedData(): Promise<void> {
-  await this.init();
-  await this.storage?.remove('tasks');
-  await this.storage?.remove('modules');
-}
-
+  async clearSavedData(): Promise<void> {
+    await this.init();
+    await this.storage?.remove('tasks');
+    await this.storage?.remove('modules');
+  }
 }

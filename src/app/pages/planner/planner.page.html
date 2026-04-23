@@ -1,15 +1,25 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Planner</ion-title>
+    <ion-title>Student Recovery Planner</ion-title>
   </ion-toolbar>
 
   <ion-toolbar>
     <div class="top-nav">
-      <ion-button fill="clear" size="small" routerLink="/dashboard">Dashboard</ion-button>
-      <ion-button fill="clear" size="small" routerLink="/modules">Modules</ion-button>
-      <ion-button fill="clear" size="small" routerLink="/planner">Planner</ion-button>
-      <ion-button fill="clear" size="small" routerLink="/progress">Progress</ion-button>
-      <ion-button fill="clear" size="small" routerLink="/settings">Settings</ion-button>
+      <ion-button fill="clear" size="small" routerLink="/dashboard"
+        >Dashboard</ion-button
+      >
+      <ion-button fill="clear" size="small" routerLink="/modules"
+        >Modules</ion-button
+      >
+      <ion-button fill="clear" size="small" routerLink="/planner"
+        >Planner</ion-button
+      >
+      <ion-button fill="clear" size="small" routerLink="/progress"
+        >Progress</ion-button
+      >
+      <ion-button fill="clear" size="small" routerLink="/settings"
+        >Settings</ion-button
+      >
     </div>
   </ion-toolbar>
 </ion-header>
@@ -18,9 +28,7 @@
   <h1>Planner</h1>
   <p>Review your tasks and decide what needs attention first.</p>
 
-  <ion-button expand="block" routerLink="/task-form">
-  Add Task
-  </ion-button>
+  <ion-button expand="block" routerLink="/task-form"> Add Task </ion-button>
 
   <div class="filter-row">
     <ion-button
@@ -75,51 +83,62 @@
       </ion-chip>
 
       <ion-button size="small" (click)="toggleTask(task.id)">
-        {{ task.status === 'Completed' ? 'Mark as To Do' : 'Mark as Completed' }}
+        {{ task.status === 'Completed' ? 'Mark as To Do' : 'Mark as Completed'
+        }}
       </ion-button>
 
-      <ion-button size="small" fill="outline" (click)="startReminderSetup(task)">
+      <ion-button
+        size="small"
+        fill="outline"
+        (click)="startReminderSetup(task)"
+      >
         Set Reminder
       </ion-button>
 
-      <ion-button size="small" color="danger" fill="outline" (click)="deleteTask(task.id)">
+      <ion-button
+        size="small"
+        color="danger"
+        fill="outline"
+        (click)="deleteTask(task.id)"
+      >
         Delete Task
       </ion-button>
-
     </ion-card-content>
   </ion-card>
 
   <p *ngIf="filteredTasks.length === 0">No tasks in this view.</p>
 
   <ion-card *ngIf="activeReminderTask">
-  <ion-card-header>
-    <ion-card-title>Set Reminder</ion-card-title>
-  </ion-card-header>
+    <ion-card-header>
+      <ion-card-title>Set Reminder</ion-card-title>
+    </ion-card-header>
 
-  <ion-card-content>
-  <p><strong>Task:</strong> {{ activeReminderTask.title }}</p>
+    <ion-card-content>
+      <p><strong>Task:</strong> {{ activeReminderTask.title }}</p>
 
-  <ion-datetime
-    presentation="date-time"
-    [(ngModel)]="selectedReminderDateTime"
-  ></ion-datetime>
+      <ion-datetime
+        presentation="date-time"
+        [(ngModel)]="selectedReminderDateTime"
+      ></ion-datetime>
 
-  <ion-button expand="block" (click)="confirmReminderSetup()">
-    Confirm Reminder
-  </ion-button>
+      <ion-button expand="block" (click)="confirmReminderSetup()">
+        Confirm Reminder
+      </ion-button>
 
-  <ion-button expand="block" fill="outline" color="medium" (click)="cancelReminderSetup()">
-  Cancel
-</ion-button>
-
-</ion-card-content>
-
-</ion-card>
+      <ion-button
+        expand="block"
+        fill="outline"
+        color="medium"
+        (click)="cancelReminderSetup()"
+      >
+        Cancel
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
   <ion-toast
-  [isOpen]="reminderToastOpen"
-  [message]="reminderToastMessage"
-  duration="2000"
-  (didDismiss)="closeReminderToast()"
-></ion-toast>
-
+    [isOpen]="reminderToastOpen"
+    [message]="reminderToastMessage"
+    duration="2000"
+    (didDismiss)="closeReminderToast()"
+  ></ion-toast>
 </ion-content>
